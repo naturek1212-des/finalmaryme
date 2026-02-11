@@ -380,7 +380,7 @@
             successTexts.forEach(el => el.classList.add('show'));
             controls.classList.add('hidden');
             proposalBubble.style.display = 'none';
-            heartImage.src = '/valentine_success.jpg';
+            heartImage.src = 'valentine_success.jpg'; // Yes 클릭 시 이미지 변경
         }
 
         function setupNoButton() {
@@ -391,6 +391,8 @@
 
         // Initialize on page load
         function initialize() {
+            const heartImage = document.getElementById('heartImage');
+            heartImage.src = 'valentine_proposal.jpg'; // 초기 이미지 설정
             initializeDecorativeHearts();
             setupNoButton();
         }
