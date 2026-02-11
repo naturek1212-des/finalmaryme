@@ -1,52 +1,408 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
+<html lang="ko">
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Will You Be My Valentine?</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: {
-              'cursive': ['"Great Vibes"', 'cursive'],
-              'sans': ['"Noto Sans KR"', 'sans-serif'],
-            },
-            animation: {
-              'bounce-slow': 'bounce 2s infinite',
-              'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-            }
-          }
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background-color: #ffeef2;
+        font-family: "Noto Sans KR", sans-serif;
+        overflow: hidden;
+        height: 100vh;
+      }
+
+      .container {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+      }
+
+      .decorative-hearts {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        overflow: hidden;
+      }
+
+      .heart-bg {
+        position: absolute;
+        color: #ffc0d9;
+        opacity: 0.3;
+        font-size: 1.5rem;
+        animation: float-hearts 3s infinite;
+      }
+
+      @keyframes float-hearts {
+        0%, 100% { opacity: 0.3; transform: translateY(0px); }
+        50% { opacity: 0.5; }
+      }
+
+      @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-20px); }
+      }
+
+      @keyframes bounce-slow {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-30px); }
+      }
+
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+      }
+
+      .content {
+        position: relative;
+        z-index: 10;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2rem;
+        max-width: 42rem;
+        width: 100%;
+      }
+
+      .title {
+        font-size: clamp(2rem, 8vw, 4.5rem);
+        font-family: "Great Vibes", cursive;
+        color: #ff0000;
+        text-align: center;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        animation: bounce-slow 2s infinite;
+      }
+
+      .title.hidden {
+        display: none;
+      }
+
+      .success-title {
+        font-size: clamp(1.5rem, 6vw, 3rem);
+        color: #ff0000;
+        font-weight: bold;
+        text-align: center;
+        margin-top: 1rem;
+        animation: pulse 1.5s infinite;
+      }
+
+      .success-text {
+        display: none;
+      }
+
+      .success-text.show {
+        display: block;
+      }
+
+      .heart-container {
+        position: relative;
+        width: clamp(250px, 80vw, 512px);
+        aspect-ratio: 1 / 1;
+        transition: transform 0.5s ease-in-out;
+      }
+
+      .heart-container:hover {
+        transform: scale(1.05);
+      }
+
+      .heart-shape {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: white;
+        border-radius: 50%;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        overflow: hidden;
+      }
+
+      .heart-shape img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 50% 85%, 18% 100%, 0% 38%);
+      }
+
+      .speech-bubble {
+        position: absolute;
+        background: white;
+        border: 2px solid black;
+        border-radius: 50%;
+        padding: 1rem 1.5rem;
+        font-weight: bold;
+        color: black;
+        text-align: center;
+        font-size: clamp(0.75rem, 3vw, 1.125rem);
+        white-space: nowrap;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 20;
+        animation: bounce 1s infinite;
+      }
+
+      .speech-bubble.left {
+        top: 2.5rem;
+        left: -3rem;
+      }
+
+      .speech-bubble.right {
+        top: 2.5rem;
+        right: -3rem;
+      }
+
+      .speech-bubble.right-top {
+        top: 1rem;
+        right: -1rem;
+      }
+
+      .speech-bubble.right {
+        animation-delay: 0.5s;
+      }
+
+      .speech-bubble::after {
+        content: '';
+        position: absolute;
+        width: 1rem;
+        height: 1rem;
+        background: white;
+        border: 2px solid black;
+        border-top: none;
+        border-left: none;
+      }
+
+      .speech-bubble.left::after {
+        bottom: 1rem;
+        right: -0.75rem;
+        transform: rotate(-45deg);
+        border-radius: 0 0 0.25rem 0;
+      }
+
+      .speech-bubble.right::after {
+        bottom: 1rem;
+        left: -0.75rem;
+        transform: rotate(45deg);
+        border-radius: 0 0 0.25rem 0;
+      }
+
+      .speech-bubble.right-top::after {
+        bottom: 1.5rem;
+        left: -0.75rem;
+        transform: rotate(45deg);
+        border-radius: 0 0 0.25rem 0;
+      }
+
+      .proposal-bubble {
+        top: 1rem;
+        right: -1rem;
+        max-width: 150px;
+        animation: pulse 1.5s infinite;
+      }
+
+      .proposal-bubble::after {
+        bottom: 1.5rem;
+        left: -0.75rem;
+        transform: rotate(45deg);
+        border-radius: 0 0 0.25rem 0;
+      }
+
+      @media (max-width: 768px) {
+        .speech-bubble.left {
+          left: -1rem;
+          font-size: 0.75rem;
+          padding: 0.75rem 1rem;
+        }
+
+        .speech-bubble.right {
+          right: -1rem;
+          font-size: 0.75rem;
+          padding: 0.75rem 1rem;
+        }
+
+        .proposal-bubble {
+          right: -0.5rem;
+          max-width: 120px;
         }
       }
-    </script>
-    <style>
-      body {
-        background-color: #ffe4e1; /* MistRosy pink */
-        overflow: hidden; /* Prevent scrollbars when button moves */
+
+      .controls {
+        display: flex;
+        gap: 2rem;
+        align-items: center;
+        justify-content: center;
+        margin-top: 2rem;
+        width: 100%;
+        height: 5rem;
+        position: relative;
       }
-      .heart-clip {
-        clip-path: path('M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z');
-        /* The SVG path above is for a unit square 0-24. We need a CSS shape or an SVG mask for better scaling. 
-           Let's use a simpler CSS approach or an SVG mask in the component. 
-        */
+
+      .controls.hidden {
+        display: none;
+      }
+
+      button {
+        padding: 0.75rem 2rem;
+        font-size: 1.875rem;
+        font-family: "Great Vibes", cursive;
+        font-weight: bold;
+        border: none;
+        border-radius: 0.375rem;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        transition: all 0.2s ease;
+        min-width: 100px;
+      }
+
+      .yes-btn {
+        background-color: #4ade80;
+        color: black;
+        border-bottom: 4px solid #16a34a;
+      }
+
+      .yes-btn:hover {
+        background-color: #22c55e;
+        transform: scale(1.1);
+      }
+
+      .yes-btn:active {
+        transform: scale(0.95);
+      }
+
+      .no-btn {
+        background-color: #ff5252;
+        color: black;
+        border-bottom: 4px solid #d32f2f;
+        position: static;
+        white-space: nowrap;
+        transition: all 0.2s ease-out;
+      }
+
+      .no-btn:hover {
+        position: fixed;
+        z-index: 50;
+      }
+
+      .no-btn:active {
+        transform: scale(0.95);
       }
     </style>
-  <script type="importmap">
-{
-  "imports": {
-    "react": "https://esm.sh/react@^19.2.4",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
-    "react/": "https://esm.sh/react@^19.2.4/"
-  }
-}
-</script>
 </head>
-  <body>
-    <div id="root"></div>
+<body>
+    <div class="container">
+        <div class="decorative-hearts" id="decorativeHearts"></div>
+
+        <div class="content">
+            <h1 class="title" id="mainTitle">Will You Be My Valentine?</h1>
+
+            <div class="heart-container" id="heartContainer">
+                <div class="heart-shape">
+                    <img id="heartImage" src="/valentine_proposal.jpg" alt="Valentine Visual" onerror="handleImageError(this)">
+                </div>
+                <div class="speech-bubble proposal-bubble" id="proposalBubble">
+                    <div>나루야 사랑해~<br>결혼하자^^</div>
+                </div>
+            </div>
+
+            <h2 class="success-title success-text" id="successTitle">천년만년사랑해~^^</h2>
+
+            <div class="speech-bubble left success-text" id="bubbleLeft">사랑해요</div>
+            <div class="speech-bubble right success-text" id="bubbleRight">움쪽~</div>
+
+            <div class="controls" id="controls">
+                <button class="yes-btn" onclick="handleYesClick()">Yes!!</button>
+                <button class="no-btn" id="noBtn">No</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isAccepted = false;
+
+        function initializeDecorativeHearts() {
+            const container = document.getElementById('decorativeHearts');
+            for (let i = 0; i < 20; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart-bg';
+                heart.textContent = '♥';
+                heart.style.top = Math.random() * 100 + '%';
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.fontSize = (Math.random() * 2 + 1) + 'rem';
+                heart.style.animationDelay = (Math.random() * 5) + 's';
+                heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                container.appendChild(heart);
+            }
+        }
+
+        function handleImageError(img) {
+            const fallback = isAccepted 
+                ? "https://images.unsplash.com/photo-1573865526739-10659fec78a5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                : "https://images.unsplash.com/photo-1548842369-0df4c0628389?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80";
+            img.src = fallback;
+        }
+
+        function handleYesClick() {
+            isAccepted = true;
+            updateUI();
+        }
+
+        function handleNoHover() {
+            const noBtn = document.getElementById('noBtn');
+            const x = Math.random() * 70 + 10;
+            const y = Math.random() * 70 + 10;
+            noBtn.style.position = 'fixed';
+            noBtn.style.top = y + 'vh';
+            noBtn.style.left = x + 'vw';
+            noBtn.style.zIndex = '50';
+        }
+
+        function updateUI() {
+            const mainTitle = document.getElementById('mainTitle');
+            const successTitle = document.getElementById('successTitle');
+            const successTexts = document.querySelectorAll('.success-text');
+            const controls = document.getElementById('controls');
+            const heartImage = document.getElementById('heartImage');
+            const proposalBubble = document.getElementById('proposalBubble');
+
+            mainTitle.classList.add('hidden');
+            successTitle.classList.add('show');
+            successTexts.forEach(el => el.classList.add('show'));
+            controls.classList.add('hidden');
+            proposalBubble.style.display = 'none';
+            heartImage.src = '/valentine_success.jpg';
+        }
+
+        function setupNoButton() {
+            const noBtn = document.getElementById('noBtn');
+            noBtn.addEventListener('mouseenter', handleNoHover);
+            noBtn.addEventListener('click', handleNoHover);
+        }
+
+        // Initialize on page load
+        function initialize() {
+            initializeDecorativeHearts();
+            setupNoButton();
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initialize);
+        } else {
+            initialize();
+        }
+    </script>
+</body>
+</html>
   </body>
 </html>
